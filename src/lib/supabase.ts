@@ -1,9 +1,24 @@
-import { createClient } from '@supabase/supabase-js'
+import { createClient, SupabaseClient } from '@supabase/supabase-js'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
+let supabaseClient: SupabaseClient | null = null
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+function getSupabase(): SupabaseClient {
+  if (supabaseClient) return supabaseClient
+  
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  
+  if (!supabaseUrl || !supabaseAnonKey) {
+    throw new Error('Missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY')
+  }
+  
+  supabaseClient = createClient(supabaseUrl, supabaseAnonKey)
+  return supabaseClient
+}
+
+export const supabase = {
+  get client() { return getSupabase() }
+}
 
 export interface Lead {
   id?: number
@@ -16,7 +31,7 @@ export interface Lead {
 }
 
 export async function saveLead(lead: Omit<Lead, 'id' | 'created_at'>): Promise<Lead | null> {
-  const { data, error } = await supabase
+  const { data, error } = await supabase.client
     .from('leads')
     .insert([lead])
     .select()

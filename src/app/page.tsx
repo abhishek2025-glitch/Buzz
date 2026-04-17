@@ -1,9 +1,14 @@
 'use client'
 
-import { Canvas } from '@react-three/fiber'
+import dynamic from 'next/dynamic'
 import { Suspense } from 'react'
-import Scene from '@/components/3d/Scene'
+import { Canvas } from '@react-three/fiber'
 import LeadForm from '@/components/ui/LeadForm'
+
+const Scene = dynamic(() => import('@/components/3d/Scene'), {
+  ssr: false,
+  loading: () => <div className="absolute inset-0 bg-slate-900" />
+})
 
 export default function Home() {
   return (
