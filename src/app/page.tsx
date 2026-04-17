@@ -1,8 +1,6 @@
 'use client'
 
 import dynamic from 'next/dynamic'
-import { Suspense } from 'react'
-import { Canvas } from '@react-three/fiber'
 import LeadForm from '@/components/ui/LeadForm'
 
 const Scene = dynamic(() => import('@/components/3d/Scene'), {
@@ -15,13 +13,9 @@ export default function Home() {
     <main className="relative w-full h-screen bg-gradient-to-b from-slate-900 to-slate-800">
       {/* 3D Scene Background */}
       <div className="absolute inset-0 z-0">
-        <Canvas camera={{ position: [0, 0, 5], fov: 75 }}>
-          <Suspense fallback={null}>
-            <Scene />
-          </Suspense>
-        </Canvas>
+        <Scene />
       </div>
-      
+
       {/* Content Overlay */}
       <div className="relative z-10 flex flex-col items-center justify-center h-full px-4">
         <div className="text-center mb-8">
@@ -32,7 +26,7 @@ export default function Home() {
             AI-powered platform transforming how businesses operate
           </p>
         </div>
-        
+
         <LeadForm />
       </div>
     </main>
