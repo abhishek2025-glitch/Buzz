@@ -1,0 +1,77 @@
+# Render Blueprint for Buzz - 3 Environment Setup
+# Apply with: render-blueprint apply render.yaml
+
+services:
+  # ==================== DEVELOPMENT ENVIRONMENT ====================
+  - name: buzz-dev
+    env: node
+    region: oregon
+    plan: free
+    branch: dev
+    autoDeploy: true
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    healthCheckPath: /
+    envVars:
+      - key: NODE_ENV
+        value: development
+      - key: NEXT_PUBLIC_SUPABASE_URL
+        sync: false
+      - key: NEXT_PUBLIC_SUPABASE_ANON_KEY
+        sync: false
+      - key: NEXT_PUBLIC_APP_URL
+        fromService:
+          name: buzz-dev
+          envVarKey: RENDER_EXTERNAL_URL
+
+  # ==================== STAGING ENVIRONMENT ====================
+  - name: buzz-staging
+    env: node
+    region: oregon
+    plan: free
+    branch: main
+    autoDeploy: true
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    healthCheckPath: /
+    envVars:
+      - key: NODE_ENV
+        value: staging
+      - key: NEXT_PUBLIC_SUPABASE_URL
+        sync: false
+      - key: NEXT_PUBLIC_SUPABASE_ANON_KEY
+        sync: false
+      - key: NEXT_PUBLIC_APP_URL
+        fromService:
+          name: buzz-staging
+          envVarKey: RENDER_EXTERNAL_URL
+
+  # ==================== PRODUCTION ENVIRONMENT ====================
+  - name: buzz-prod
+    env: node
+    region: oregon
+    plan: starter
+    branch: main
+    autoDeploy: true
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    healthCheckPath: /
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_PUBLIC_SUPABASE_URL
+        sync: false
+      - key: NEXT_PUBLIC_SUPABASE_ANON_KEY
+        sync: false
+      - key: NEXT_PUBLIC_APP_URL
+        fromService:
+          name: buzz-prod
+          envVarKey: RENDER_EXTERNAL_URL
+
+databases:
+  # ==================== LEAD STORAGE DATABASE ====================
+  - name: buzz-db
+    databaseName: buzz_leads
+    plan: starter
+    ipAllowList: []
+    postgresVersion: "15"
