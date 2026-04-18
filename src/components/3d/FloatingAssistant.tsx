@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useMemo } from 'react'
+import { useRef, useMemo, useEffect } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 
@@ -35,6 +35,15 @@ export default function FloatingAssistant() {
       }),
     }
   }, [])
+
+  // Dispose materials on unmount to prevent memory leaks
+  useEffect(() => {
+    return () => {
+      outerMaterial.dispose()
+      innerMaterial.dispose()
+      ringMaterial.dispose()
+    }
+  }, [outerMaterial, innerMaterial, ringMaterial])
 
   useFrame((state) => {
     const time = state.clock.getElapsedTime()

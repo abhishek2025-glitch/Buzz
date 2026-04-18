@@ -2,6 +2,7 @@
 
 import dynamic from 'next/dynamic'
 import LeadForm from '@/components/ui/LeadForm'
+import ErrorBoundary from '@/components/3d/ErrorBoundary'
 
 const Scene = dynamic(() => import('@/components/3d/Scene'), {
   ssr: false,
@@ -13,7 +14,9 @@ export default function Home() {
     <main className="relative w-full h-screen bg-gradient-to-b from-slate-900 to-slate-800">
       {/* 3D Scene Background */}
       <div className="absolute inset-0 z-0">
-        <Scene />
+        <ErrorBoundary>
+          <Scene />
+        </ErrorBoundary>
       </div>
 
       {/* Content Overlay */}

@@ -9,19 +9,17 @@ import FloatingAssistant from './FloatingAssistant'
 function Particles() {
   const count = 200
   const mesh = useRef<THREE.Points>(null)
-  
-  const [positions, sizes] = useMemo(() => {
-    const pos = new Float32Array(count * 3)
-    const size = new Float32Array(count)
-    
+
+  const geometry = useMemo(() => {
+    const geo = new THREE.BufferGeometry()
+    const positions = new Float32Array(count * 3)
     for (let i = 0; i < count; i++) {
-      pos[i * 3] = (Math.random() - 0.5) * 20
-      pos[i * 3 + 1] = (Math.random() - 0.5) * 20
-      pos[i * 3 + 2] = (Math.random() - 0.5) * 20
-      size[i] = Math.random() * 0.05
+      positions[i * 3] = (Math.random() - 0.5) * 20
+      positions[i * 3 + 1] = (Math.random() - 0.5) * 20
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 20
     }
-    
-    return [pos, size]
+    geo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3))
+    return geo
   }, [])
 
   useFrame((state) => {
@@ -32,21 +30,7 @@ function Particles() {
   })
 
   return (
-    <points ref={mesh}>
-      <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          count={count}
-          array={positions}
-          itemSize={3}
-        />
-        <bufferAttribute
-          attach="attributes-size"
-          count={count}
-          array={sizes}
-          itemSize={1}
-        />
-      </bufferGeometry>
+    <points ref={mesh} geometry={geometry}>
       <pointsMaterial
         size={0.05}
         color="#6366f1"
